@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>未来展望 | 李明的个人主页</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="%23333" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>'), pointer;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-decoration: none;
+            color: white;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 2rem;
+            transition: all 0.3s ease;
+            opacity: 0.9;
+        }
+
+        nav a:hover {
+            opacity: 1;
+            text-decoration: underline;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            color: #2c3e50;
+            position: relative;
+            display: inline-block;
+        }
+
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: #667eea;
+            border-radius: 2px;
+        }
+
+        .content {
+            display: flex;
+            gap: 3rem;
+            margin-top: 2rem;
+        }
+
+        .video-container {
+            flex: 1;
+        }
+
+        .video-container video {
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .goals-container {
+            flex: 1;
+        }
+
+        .goals {
+            margin-bottom: 2rem;
+        }
+
+        .goal-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .goal-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .goal-icon {
+            background: #667eea;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+
+        .goal-content h3 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .plans {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-top: 2rem;
+        }
+
+        .plans h3 {
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        .plans-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .plan-item {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-top: 4px solid #667eea;
+        }
+
+        .plan-item h4 {
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        .back-btn {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 0.8rem 2rem;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 2rem;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .back-btn:hover {
+            background: #5a67d8;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 5rem;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                flex-direction: column;
+            }
+            
+            .header-container {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            nav a {
+                margin: 0 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <a href="index.html" class="logo">李明的个人主页</a>
+            <nav>
+                <a href="index.html">首页</a>
+                <a href="basic-info.html">基本情况</a>
+                <a href="education.html">教育经历</a>
+                <a href="hobbies.html">个人爱好</a>
+                <a href="moments.html">难忘瞬间</a>
+                <a href="future.html">未来展望</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <h1 class="page-title">未来展望</h1>
+        
+        <div class="content">
+            <div class="video-container">
+                <video controls poster="https://images.unsplash.com/photo-1517021897933-0e0319cfbc28?ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80">
+                    <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+                    你的浏览器不支持HTML5视频。
+                </video>
+            </div>
+            
+            <div class="goals-container">
+                <div class="goals">
+                    <div class="goal-item">
+                        <div class="goal-icon">1</div>
+                        <div class="goal-content">
+                            <h3>技术深造</h3>
+                            <p>深入学习人工智能和Web3技术，探索前沿技术的应用场景。计划在未来2年内完成相关领域的专业认证。</p>
+                        </div>
+                    </div>
+                    
+                    <div class="goal-item">
+                        <div class="goal-icon">2</div>
+                        <div class="goal-content">
+                            <h3>创业计划</h3>
+                            <p>在未来3年内创办自己的科技公司，专注于创新产品的开发，解决实际问题，创造社会价值。</p>
+                        </div>
+                    </div>
+                    
+                    <div class="goal-item">
+                        <div class="goal-icon">3</div>
+                        <div class="goal-content">
+                            <h3>知识分享</h3>
+                            <p>通过博客和讲座分享我的经验，帮助更多年轻人成长，培养新一代的技术人才。</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="plans">
+                    <h3>近期规划</h3>
+                    <div class="plans-grid">
+                        <div class="plan-item">
+                            <h4>短期 (1年)</h4>
+                            <ul>
+                                <li>完成3个开源项目</li>
+                                <li>发表10篇技术博客</li>
+                                <li>参加2次行业峰会</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="plan-item">
+                            <h4>中期 (3年)</h4>
+                            <ul>
+                                <li>组建创业团队</li>
+                                <li>获得天使轮融资</li>
+                                <li>产品上线并获得1万用户</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="plan-item">
+                            <h4>长期 (5年)</h4>
+                            <ul>
+                                <li>公司稳定盈利</li>
+                                <li>建立技术培训学院</li>
+                                <li>成为行业知名专家</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <a href="index.html" class="back-btn">返回首页</a>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 我的个人主页 | 设计与开发：李明</p>
+    </footer>
+</body>
+</html>

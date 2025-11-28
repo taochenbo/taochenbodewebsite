@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>角色档案 | 陶晨博的个人主页</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Courier New', monospace;
+        }
+
+        /* 背景照片样式 */
+        body {
+            background-image: url('https://images.unsplash.com/photo-1599566150163-29194dcaad36?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+            padding: 2rem 0;
+            position: relative;
+        }
+
+        /* 背景遮罩层 */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 30, 0.85);
+            z-index: -1;
+        }
+
+        /* 毛玻璃效果容器 */
+        .glass-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .terminal {
+            background: rgba(0, 0, 40, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 顶部导航栏 */
+        .header-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .logo i {
+            font-size: 2rem;
+            animation: spin 5s linear infinite;
+            color: #4facfe;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin-left: 1.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            background: rgba(79, 172, 254, 0.3);
+            transform: translateY(-3px);
+        }
+
+        .terminal-header {
+            background: linear-gradient(to right, #4facfe, #00f2fe);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 10px 10px 0 0;
+            margin: -2rem -2rem 1rem -2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .terminal-title {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .content {
+            padding: 1.5rem;
+            background: rgba(0, 0, 30, 0.6);
+            border-radius: 0 0 10px 10px;
+            color: #00ff41;
+            min-height: 600px;
+        }
+
+        .command {
+            margin-bottom: 1rem;
+            animation: typing 0.5s steps(40, end);
+            display: flex;
+            align-items: center;
+        }
+
+        .prompt {
+            color: #ff79c6;
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+
+        .response {
+            margin-left: 1.5rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+            color: #f1fa8c;
+        }
+
+        /* 个人信息卡片 */
+        .profile-card {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .profile-avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid #4facfe;
+            box-shadow: 0 0 20px rgba(79, 172, 254, 0.5);
+        }
+
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-info {
+            flex: 1;
+        }
+
+        .profile-name {
+            font-size: 2rem;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-details {
+            color: #f1fa8c;
+            line-height: 1.8;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: #4facfe;
+            box-shadow: 0 10px 20px rgba(79, 172, 254, 0.2);
+        }
+
+        .stat-bar {
+            height: 8px;
+            background: rgba(0, 0, 0, 0.3);
+            margin: 0.5rem 0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .stat-fill {
+            height: 100%;
+            background: linear-gradient(to right, #4facfe, #00f2fe);
+            border-radius: 4px;
+        }
+
+        .skill-tag {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0.3rem 0.8rem;
+            margin: 0.3rem;
+            border-radius: 20px;
+            color: #f1fa8c;
+            transition: all 0.2s;
+        }
+
+        .skill-tag:hover {
+            background: rgba(79, 172, 254, 0.2);
+            border-color: #4facfe;
+        }
+
+        .secret-file {
+            border-left: 3px solid #ff79c6;
+            padding: 1rem 1.5rem;
+            margin: 2rem 0;
+            color: #f8f8f2;
+            background: rgba(255, 121, 198, 0.1);
+            border-radius: 0 10px 10px 0;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(79, 172, 254, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(79, 172, 254, 0.4);
+        }
+
+        /* 打字机动画 */
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+
+        /* 闪烁光标 */
+        .prompt::after {
+            content: "_";
+            animation: blink 1s step-end infinite;
+        }
+
+        @keyframes blink {
+            from, to { opacity: 1 }
+            50% { opacity: 0 }
+        }
+
+        @media (max-width: 768px) {
+            .terminal {
+                padding: 1rem;
+            }
+            
+            .terminal-header {
+                margin: -1rem -1rem 1rem -1rem;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .profile-card {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="glass-container">
+        <!-- 导航栏 -->
+        <div class="header-nav">
+            <a href="index.html" class="logo">
+                <i class="fas fa-star"></i>
+                我的青春主页
+            </a>
+            <div class="nav-links">
+                <a href="index.html"><i class="fas fa-home"></i> 首页</a>
+                <a href="basic-info.html"><i class="fas fa-user"></i> 关于我</a>
+                <a href="education.html"><i class="fas fa-graduation-cap"></i> 校园生活</a>
+                <a href="hobbies.html"><i class="fas fa-heart"></i> 兴趣爱好</a>
+            </div>
+        </div>
+
+        <div class="terminal">
+            <div class="terminal-header">
+                <div class="terminal-title">陶晨博的个人档案系统 [v1.0]</div>
+                <div><i class="fas fa-terminal"></i></div>
+            </div>
+            
+            <div class="content">
+                <div class="command">
+                    <span class="prompt">> system boot</span>
+                </div>
+                <div class="response">
+                    欢迎使用个人档案系统！<br>
+                    正在加载陶晨博的角色数据...<br>
+                    <span style="color: #4facfe;">[加载完成]</span>
+                </div>
+
+                <div class="command">
+                    <span class="prompt">> whoami</span>
+                </div>
+                
+                <!-- 个人信息卡片 -->
+                <div class="profile-card">
+                    <div class="profile-avatar">
+                        <img src="images/head.JPG" alt="陶晨博">
+                    </div>
+                    <div class="profile-info">
+                        <div class="profile-name">陶晨博</div>
+                        <div class="profile-details">
+                            <strong>等级:</strong> Lv.1 (大一新生)<br>
+                            <strong>专业:</strong> 计算机科学与技术<br>
+                            <strong>所属阵营:</strong> 华中科技大学
+                        </div>
+                    </div>
+                </div>
+
+                <div class="command">
+                    <span class="prompt">> stats</span>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <strong>身高</strong>
+                        <div class="stat-bar">
+                            <div class="stat-fill" style="width: 95%;"></div>
+                        </div>
+                        <small>185cm / 高富帅至少先占到了高</small>
+                    </div>
+                    <div class="stat-card">
+                        <strong>体重</strong>
+                        <div class="stat-bar">
+                            <div class="stat-fill" style="width: 75%;"></div>
+                        </div>
+                        <small>70kg / 别说哥们弱不禁风，哥们这是身材保持的好</small>
+                    </div>
+                    <div class="stat-card">
+                        <strong>体育能力</strong>
+                        <div class="stat-bar">
+                            <div class="stat-fill" style="width: 85%;"></div>
+                        </div>
+                        <small>体测80+ / 就说别觉得哥们弱不禁风</small>
+                    </div>
+                    <div class="stat-card">
+                        <strong>编程能力</strong>
+                        <div class="stat-bar">
+                            <div class="stat-fill" style="width: 25%;"></div>
+                        </div>
+                        <small>我会打Hello World / 但是我可以练不是吗</small>
+                    </div>
+                </div>
+
+                <div class="command">
+                    <span class="prompt">> skills</span>
+                </div>
+                <div class="response">
+                    <strong>掌握技能:</strong><br>
+                    <span class="skill-tag">会吃会生活</span>
+                    <span class="skill-tag">不完全掌握篮球</span>
+                    <span class="skill-tag">不完全掌握吉他</span>
+                    <span class="skill-tag">掌握急救</span>
+                    <br><br>
+                    <strong>学习中技能:</strong><br>
+                    <span class="skill-tag">那可太多了 上大学才发现啥技能都要学习</span>
+                </div>
+
+                <div class="command">
+                    <span class="prompt">> biography</span>
+                </div>
+                <div class="response">
+                    河南驻马店人，在武汉长大，南北合资。<br>
+                    计算机萌新，虽然菜，但愿意探索。<br>
+                    大多数时候比较乐观粗线条，但偶尔也会很文艺深沉。<br>
+                    希望有一天，我们学到的知识可以真正给世界带来改变。
+                </div>
+
+                <div class="command">
+                    <span class="prompt">> secrets</span>
+                </div>
+                <div class="secret-file">
+                    <strong>📄 陶晨博的绝密档案 [等级：S]</strong><br><br>
+                    都叫绝密档案了怎么可以随便让你们知道
+                </div>
+
+                <div class="command">
+                    <span class="prompt">> exit</span>
+                </div>
+                <div class="response">
+                    感谢使用陶晨博的个人档案系统！<br>
+                </div>
+
+                <div class="nav-buttons">
+                    <!-- 只保留返回首页按钮 -->
+                    <button class="btn" onclick="window.location.href='index.html'"><i class="fas fa-home"></i> 返回首页</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 模拟命令行交互
+        document.querySelectorAll('.command').forEach((cmd, index) => {
+            setTimeout(() => {
+                cmd.style.display = 'flex';
+            }, index * 500);
+        });
+    </script>
+</body>
+</html>

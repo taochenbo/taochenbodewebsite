@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的个人主页</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            /* 全局设置为默认箭头光标 */
+            cursor: default;
+        }
+
+        /* 只给投票按钮设置标准的手指光标 */
+        .vote-btn {
+            cursor: pointer; /* 使用标准指针光标，避免SVG兼容性问题 */
+        }
+
+        /* 背景图片轮播容器 */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: white;
+            text-align: center;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        .bg-carousel {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            overflow: hidden;
+        }
+
+        .bg-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .bg-slide.active {
+            opacity: 1;
+        }
+
+        /* 背景遮罩层 */
+        .bg-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.8), rgba(118, 75, 162, 0.8));
+            z-index: -1;
+        }
+
+        /* 固定头像 */
+        .avatar-container {
+            width: 200px;
+            height: 200px;
+            margin: 2rem auto;
+            overflow: hidden;
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            border: 5px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            z-index: 10;
+        }
+
+        .avatar-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* 投票区域样式 */
+        .vote-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem auto;
+            width: 90%;
+            max-width: 600px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 10;
+        }
+
+        .vote-question {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            font-weight: bold;
+        }
+
+        .vote-options {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .vote-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            width: 150px;
+        }
+
+        .vote-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px);
+        }
+
+        .vote-btn#handsome-btn {
+            border-color: #4CAF50;
+        }
+
+        .vote-btn#handsome-btn:hover {
+            background: rgba(76, 175, 80, 0.3);
+        }
+
+        .vote-btn#not-handsome-btn {
+            border-color: #f44336;
+        }
+
+        .vote-btn#not-handsome-btn:hover {
+            background: rgba(244, 67, 54, 0.3);
+        }
+
+        .vote-result {
+            min-height: 2rem;
+            font-size: 1.2rem;
+            font-weight: bold;
+            padding: 1rem;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .result-success {
+            background: rgba(76, 175, 80, 0.2);
+            color: #a5d6a7;
+            display: block;
+        }
+
+        .result-error {
+            background: rgba(244, 67, 54, 0.2);
+            color: #ef9a9a;
+            display: block;
+        }
+
+        .container {
+            max-width: 1200px;
+            padding: 0 4rem; /* 增加左右内边距，给箭头留出空间 */
+            width: 100%;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+
+        /* 卡片容器 - 带箭头控制 */
+        .card-container {
+            position: relative;
+            width: 100%;
+            margin-top: 2rem;
+            z-index: 10;
+        }
+
+        /* 箭头按钮样式 - 调整位置避免遮挡 */
+        .nav-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 20;
+            /* 调整位置，避免遮挡卡片 */
+            margin: 0 1rem;
+        }
+
+        .nav-arrow:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .prev-arrow {
+            left: -2rem; /* 向左调整，避免遮挡 */
+        }
+
+        .next-arrow {
+            right: -2rem; /* 向右调整，避免遮挡 */
+        }
+
+        /* 卡片滚动容器 */
+        .card-scroller {
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* 卡片轨道 */
+        .card-track {
+            display: flex;
+            gap: 2rem;
+            transition: transform 0.5s ease-out;
+        }
+
+        /* 更大的横向卡片样式 */
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 2rem;
+            min-width: 280px;
+            max-width: 280px;
+            height: 220px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            text-decoration: none;
+            color: white;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .card:hover {
+            transform: translateY(-5px) scale(1.03);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .card i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #ffd700;
+        }
+
+        .card h2 {
+            font-size: 1.5rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .card p {
+            opacity: 0.8;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        footer {
+            margin-top: 5rem;
+            opacity: 0.7;
+            padding-bottom: 2rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+            
+            .avatar-container {
+                width: 150px;
+                height: 150px;
+            }
+            
+            .container {
+                padding: 0 2rem; /* 移动端减少内边距 */
+            }
+            
+            .vote-options {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .vote-btn {
+                width: 200px;
+            }
+            
+            /* 移动端调整卡片大小 */
+            .card {
+                min-width: 220px;
+                max-width: 220px;
+                height: 180px;
+                padding: 1.5rem;
+            }
+            
+            .card i {
+                font-size: 2.5rem;
+            }
+            
+            .card h2 {
+                font-size: 1.3rem;
+            }
+            
+            .card p {
+                font-size: 0.9rem;
+            }
+            
+            /* 移动端调整箭头位置 */
+            .nav-arrow {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+            
+            .prev-arrow {
+                left: -1rem;
+            }
+            
+            .next-arrow {
+                right: -1rem;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- 背景图片轮播 -->
+    <div class="bg-carousel">
+        <div class="bg-slide active" style="background-image: url('images/bg1.JPG');"></div>
+        <div class="bg-slide" style="background-image: url('images/bg2.JPG');"></div>
+        <div class="bg-slide" style="background-image: url('images/bg3.JPG');"></div>
+        <div class="bg-slide" style="background-image: url('images/bg4.JPG');"></div>
+    </div>
+    
+    <!-- 背景遮罩 -->
+    <div class="bg-overlay"></div>
+
+    <!-- 固定头像 -->
+    <div class="avatar-container">
+        <img src="images/avatar.jpg" alt="我的头像" class="avatar-img">
+    </div>
+
+    <div class="container">
+        <h1>A website about myself……</h1>
+        <p class="subtitle">既然要做网站 为什么不做一个真正属于自己的网站呢
+        </p>
+        
+        <!-- 投票区域 -->
+        <div class="vote-section">
+            <div class="vote-question">很好的创意，不是吗？</div>
+            <div class="vote-options">
+                <button class="vote-btn" id="not-handsome-btn">其实没啥意思</button>
+                <button class="vote-btn" id="handsome-btn">我也觉得！</button>
+            </div>
+            <div class="vote-result" id="vote-result"></div>
+        </div>
+        
+        <!-- 卡片区域 - 带箭头控制 -->
+        <div class="card-container">
+            <!-- 左右箭头 -->
+            <div class="nav-arrow prev-arrow" id="prevArrow">
+                <i class="fas fa-chevron-left"></i>
+            </div>
+            
+            <div class="card-scroller" id="cardScroller">
+                <div class="card-track" id="cardTrack">
+                    <!-- 原始卡片 -->
+                    <a href="basic-info.html" class="card">
+                        <i class="fas fa-user"></i>
+                        <h2>基本情况</h2>
+                        <p>带你重新认识这个185帅哥</p>
+                    </a>
+                    
+                    <a href="education.html" class="card">
+                        <i class="fas fa-graduation-cap"></i>
+                        <h2>教育经历</h2>
+                        <p>没准我们是校友呢？</p>
+                    </a>
+                    
+                    <a href="hobbies.html" class="card">
+                        <i class="fas fa-heart"></i>
+                        <h2>个人爱好</h2>
+                        <p>人总是要热爱点什么的 不然用什么度过这岁月漫长</p>
+                    </a>
+                    
+                    <a href="moments.html" class="card">
+                        <i class="fas fa-camera"></i>
+                        <h2>难忘瞬间</h2>
+                        <p>也有可能是我的出丑瞬间</p>
+                    </a>
+                    
+                    <a href="future.html" class="card">
+                        <i class="fas fa-rocket"></i>
+                        <h2>未来展望</h2>
+                        <p>咸鱼也有梦想的</p>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="nav-arrow next-arrow" id="nextArrow">
+                <i class="fas fa-chevron-right"></i>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>&copy; 我的个人主页</p>
+    </footer>
+
+    <script>
+        // 背景图片轮播
+        const bgSlides = document.querySelectorAll('.bg-slide');
+        let currentSlide = 0;
+        
+        function showSlide(index) {
+            bgSlides.forEach(slide => slide.classList.remove('active'));
+            bgSlides[index].classList.add('active');
+        }
+        
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % bgSlides.length;
+            showSlide(currentSlide);
+        }
+        
+        setInterval(nextSlide, 3000);  
+        
+        // 初始化投票计数器
+        let voteCount = localStorage.getItem('handsomeVoteCount') || 0;
+        
+        // 获取投票相关元素
+        const handsomeBtn = document.getElementById('handsome-btn');
+        const notHandsomeBtn = document.getElementById('not-handsome-btn');
+        const voteResult = document.getElementById('vote-result');
+        
+        // 投票事件处理
+        handsomeBtn.addEventListener('click', function() {
+            voteCount++;
+            localStorage.setItem('handsomeVoteCount', voteCount);
+            voteResult.textContent = `有眼光！你是第${voteCount}个这么觉得的`;
+            voteResult.className = 'vote-result result-success';
+            
+            setTimeout(() => {
+                voteResult.className = 'vote-result';
+            }, 3000);
+        });
+        
+        notHandsomeBtn.addEventListener('click', function() {
+            voteResult.textContent = '投票失败，请重新选择！';
+            voteResult.className = 'vote-result result-error';
+            
+            setTimeout(() => {
+                voteResult.className = 'vote-result';
+            }, 2000);
+        });
+
+        // --- 循环卡片控制功能 ---
+        const cardScroller = document.getElementById('cardScroller');
+        const cardTrack = document.getElementById('cardTrack');
+        const cards = document.querySelectorAll('.card');
+        const prevArrow = document.getElementById('prevArrow');
+        const nextArrow = document.getElementById('nextArrow');
+        
+        // 复制卡片用于循环效果
+        const cardClone = cardTrack.innerHTML;
+        cardTrack.innerHTML += cardClone; // 复制一份到末尾
+        cardTrack.innerHTML = cardClone + cardTrack.innerHTML; // 复制一份到开头
+        
+        // 获取所有卡片（包括复制的）
+        const allCards = document.querySelectorAll('.card');
+        const originalCardCount = cards.length;
+        
+        // 计算卡片尺寸
+        let cardWidth, cardGap, cardFullWidth, scrollAmount;
+        
+        function calculateDimensions() {
+            const card = allCards[0];
+            cardWidth = card.offsetWidth;
+            cardGap = parseInt(getComputedStyle(cardTrack).gap) || 32;
+            cardFullWidth = cardWidth + cardGap;
+            
+            // 设置每次滚动的距离（卡片宽度的一半）
+            scrollAmount = cardWidth / 2;
+            
+            // 初始位置：显示中间的原始卡片
+            const initialPosition = -originalCardCount * cardFullWidth;
+            currentPosition = initialPosition;
+            cardTrack.style.transform = `translateX(${currentPosition}px)`;
+        }
+        
+        // 初始化位置
+        let currentPosition = 0;
+        calculateDimensions();
+        
+        // 窗口大小变化时重新计算
+        window.addEventListener('resize', calculateDimensions);
+        
+        // 滚动函数
+        function scrollCards(direction) {
+            // 更新位置
+            currentPosition += direction * scrollAmount;
+            
+            // 应用变换
+            cardTrack.style.transition = 'transform 0.5s ease-out';
+            cardTrack.style.transform = `translateX(${currentPosition}px)`;
+            
+            // 检查循环条件
+            checkLoopCondition();
+        }
+        
+        // 检查是否需要循环
+        function checkLoopCondition() {
+            const threshold = originalCardCount * cardFullWidth;
+            
+            // 向右滚动到末尾，跳转到开头
+            if (currentPosition < -2 * threshold) {
+                setTimeout(() => {
+                    cardTrack.style.transition = 'none';
+                    currentPosition = -threshold;
+                    cardTrack.style.transform = `translateX(${currentPosition}px)`;
+                }, 500);
+            }
+            
+            // 向左滚动到开头，跳转到末尾
+            if (currentPosition > -threshold) {
+                setTimeout(() => {
+                    cardTrack.style.transition = 'none';
+                    currentPosition = -2 * threshold;
+                    cardTrack.style.transform = `translateX(${currentPosition}px)`;
+                }, 500);
+            }
+        }
+        
+        // 绑定箭头事件
+        prevArrow.addEventListener('click', () => scrollCards(1)); // 向左滚动
+        nextArrow.addEventListener('click', () => scrollCards(-1)); // 向右滚动
+        
+        // 支持键盘控制
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') {
+                scrollCards(1);
+            } else if (e.key === 'ArrowRight') {
+                scrollCards(-1);
+            }
+        });
+        
+        // 初始化
+        window.addEventListener('load', calculateDimensions);
+    </script>
+</body>
+</html>

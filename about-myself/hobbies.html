@@ -1,0 +1,415 @@
+!<DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>兴趣爱好 | 陶晨博的个人主页</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Courier New', monospace;
+        }
+
+        body {
+            background-image: url('https://images.unsplash.com/photo-1599566150163-29194dcaad36?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+            padding: 2rem 0;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 30, 0.85);
+            z-index: -1;
+        }
+
+        .glass-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .terminal {
+            background: rgba(0, 0, 40, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .logo i {
+            font-size: 2rem;
+            animation: spin 5s linear infinite;
+            color: #4facfe;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin-left: 1.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background: rgba(79, 172, 254, 0.3);
+            transform: translateY(-3px);
+        }
+
+        .terminal-header {
+            background: linear-gradient(to right, #4facfe, #00f2fe);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 10px 10px 0 0;
+            margin: -2rem -2rem 1rem -2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .terminal-title {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .content {
+            padding: 1.5rem;
+            background: rgba(0, 0, 30, 0.6);
+            border-radius: 0 0 10px 10px;
+            color: #00ff41;
+            min-height: 600px;
+        }
+
+        .command {
+            margin-bottom: 1rem;
+            animation: typing 0.5s steps(40, end);
+            display: flex;
+            align-items: center;
+        }
+
+        .prompt {
+            color: #ff79c6;
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+
+        .response {
+            margin-left: 1.5rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+            color: #f1fa8c;
+        }
+
+        /* 四宫格布局 - 固定2列2行 */
+        .hobbies-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* 固定2列 */
+            grid-template-rows: repeat(2, 1fr);    /* 固定2行 */
+            gap: 2rem;
+            margin: 2rem 0;
+            max-width: 1000px; /* 控制最大宽度，保持四宫格比例 */
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hobby-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            height: 100%; /* 确保卡片高度一致 */
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hobby-card:hover {
+            transform: translateY(-5px);
+            border-color: #4facfe;
+            box-shadow: 0 10px 20px rgba(79, 172, 254, 0.2);
+        }
+
+        /* 媒体容器样式（视频/照片） */
+        .media-container {
+            width: 100%;
+            height: 160px;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid rgba(79, 172, 254, 0.3);
+            flex-shrink: 0; /* 防止容器被压缩 */
+        }
+        
+        /* 视频样式 */
+        .hobby-video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background: rgba(0,0,0,0.5);
+        }
+
+        /* 单张照片样式 */
+        .single-photo {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .single-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .hobby-card:hover .single-photo img {
+            transform: scale(1.05);
+        }
+
+        .hobby-title {
+            color: #4facfe;
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .hobby-desc {
+            color: #f1fa8c;
+            line-height: 1.6;
+            flex-grow: 1; /* 让描述文字填充剩余空间 */
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            background: linear-gradient(to right, #4facfe, #00f2fe);
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(79, 172, 254, 0.3);
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(79, 172, 254, 0.4);
+        }
+
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+
+        .prompt::after {
+            content: "_";
+            animation: blink 1s step-end infinite;
+        }
+
+        @keyframes blink {
+            from, to { opacity: 1 }
+            50% { opacity: 0 }
+        }
+
+        @media (max-width: 768px) {
+            .terminal {
+                padding: 1rem;
+            }
+            
+            .terminal-header {
+                margin: -1rem -1rem 1rem -1rem;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            /* 移动端恢复单列布局 */
+            .hobbies-grid {
+                grid-template-columns: 1fr;
+                grid-template-rows: repeat(4, 1fr);
+            }
+            
+            .media-container {
+                height: 200px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="glass-container">
+        <div class="header-nav">
+            <a href="index.html" class="logo">
+                <i class="fas fa-star"></i>
+                我的青春主页
+            </a>
+            <div class="nav-links">
+                <a href="index.html"><i class="fas fa-home"></i> 首页</a>
+                <a href="basic-info.html"><i class="fas fa-user"></i> 关于我</a>
+                <a href="education.html"><i class="fas fa-graduation-cap"></i> 校园生活</a>
+                <a href="hobbies.html" class="active"><i class="fas fa-heart"></i> 兴趣爱好</a>
+            </div>
+        </div>
+
+        <div class="terminal">
+            <div class="terminal-header">
+                <div class="terminal-title">陶晨博的兴趣爱好系统 [v2.2-媒体展示版]</div>
+                <div><i class="fas fa-terminal"></i></div>
+            </div>
+            
+            <div class="content">
+                <div class="command">
+                    <span class="prompt">> system boot</span>
+                </div>
+                <div class="response">
+                    欢迎访问兴趣爱好系统！<br>
+                    正在加载陶晨博的兴趣数据及媒体资源...<br>
+                    <span style="color: #4facfe;">[加载完成]</span>
+                </div>
+
+                <div class="command">
+                    <span class="prompt">> list hobbies with media</span>
+                </div>
+                <div class="response">
+                    <strong>🎯 兴趣爱好列表（媒体展示）:</strong>
+                </div>
+
+                <!-- 四宫格布局：吉他(视频)、摄影(视频)、篮球(单图)、游戏(单图) -->
+                <div class="hobbies-grid">
+                    <!-- 第一格：吉他（视频） -->
+                    <div class="hobby-card">
+                        <div class="hobby-title">
+                            <i class="fas fa-guitar"></i> 吉他
+                        </div>
+                        <div class="media-container">
+                            <video class="hobby-video" controls poster="images/cover1.JPG">
+                                <source src="videos/guitar.MP4" type="video/mp4">
+                                您的浏览器不支持视频播放
+                            </video>
+                        </div>
+                        <div class="hobby-desc">
+                            吉他是高中舍友教的，想起高中在寝室的间隙匆匆拨弄几下琴弦，还真有点怀念
+                        </div>
+                    </div>
+
+                    <!-- 第二格：摄影（视频） -->
+                    <div class="hobby-card">
+                        <div class="hobby-title">
+                            <i class="fas fa-camera"></i> 摄影
+                        </div>
+                        <div class="media-container">
+                            <video class="hobby-video" controls poster="images/cover2.JPG">
+                                <source src="videos/photograph.mp4" type="video/mp4">
+                                您的浏览器不支持视频播放
+                            </video>
+                        </div>
+                        <div class="hobby-desc">
+                            高中和同学们制作的寝室宣传片的片头，素材都是生活中拍摄的，高中美好的回忆
+                        </div>
+                    </div>
+
+                    <!-- 第三格：篮球（单张照片） -->
+                    <div class="hobby-card">
+                        <div class="hobby-title">
+                            <i class="fas fa-basketball-ball"></i> 篮球
+                        </div>
+                        <div class="media-container">
+                            <div class="single-photo">
+                                <img src="images/basketball.JPG" alt="篮球比赛">
+                            </div>
+                        </div>
+                        <div class="hobby-desc">
+                            高中班赛首发中锋，结果被打爆了，对不起在外线挥汗如雨的兄弟们呜呜呜（最高的是我）
+                        </div>
+                    </div>
+
+                    <!-- 第四格：游戏（单张照片） -->
+                    <div class="hobby-card">
+                        <div class="hobby-title">
+                            <i class="fas fa-gamepad"></i> 游戏
+                        </div>
+                        <div class="media-container">
+                            <div class="single-photo">
+                                <img src="images/game.JPG" alt="游戏设备">
+                            </div>
+                        </div>
+                        <div class="hobby-desc">
+                            部落冲突八年老粉，曾经也是顶级玩家，高中三年没玩，现在已经被时代狠狠地抛在了后面。
+                        </div>
+                    </div>
+                </div>
+
+                <div class="command">
+                    <span class="prompt">> exit</span>
+                </div>
+                <div class="response">
+                    感谢浏览陶晨博的兴趣爱好！<br>
+                </div>
+
+                <div class="nav-buttons">
+                    <a href="index.html" class="btn"><i class="fas fa-home"></i> 返回首页</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.querySelectorAll('.command').forEach((cmd, index) => {
+            setTimeout(() => {
+                cmd.style.display = 'flex';
+            }, index * 500);
+        });
+    </script>
+</body>
